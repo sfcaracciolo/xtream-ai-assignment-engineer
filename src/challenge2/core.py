@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 from sklearn.preprocessing import OneHotEncoder 
 from sklearn.linear_model import LinearRegression 
+import pickle 
 
 def load(file_path: Path) -> pd.DataFrame:
     # here, some checks before load file
@@ -41,7 +42,7 @@ def encoding(input: pd.DataFrame) -> pd.DataFrame:
 
     return ohe_data
 
-def build_model(csv_path: Path, model_path: Path) -> LinearRegression:
+def build_model(csv_path: Path, model_path: Path = None) -> None | LinearRegression:
     input = load(csv_path)
     curation(input)
     ohe_data = encoding(input)
@@ -49,7 +50,12 @@ def build_model(csv_path: Path, model_path: Path) -> LinearRegression:
     X -= X.mean() # standarizing samples
     X /= X.std()
     log_y = input.price.map(np.log).to_numpy() # target
-    return LinearRegression().fit(X, log_y)
+    model = LinearRegression().fit(X, log_y)
+
+    if model_path is None:
+        return model
+    pickle.dump(model, open(model_path, 'wb'))
+    
 
 def predict(model: LinearRegression, samples: np.ndarray) -> np.ndarray:
     return np.exp(model.predict(samples))
