@@ -5,7 +5,7 @@ from sklearn.preprocessing import OneHotEncoder
 from sklearn.linear_model import LinearRegression 
 
 def load(file_path: Path) -> pd.DataFrame:
-    # here, some check before load file
+    # here, some checks before load file
     return pd.read_csv(file_path)
 
 def curation(input: pd.DataFrame) -> None:
@@ -41,8 +41,8 @@ def encoding(input: pd.DataFrame) -> pd.DataFrame:
 
     return ohe_data
 
-def build_model(file_path: Path) -> LinearRegression:
-    input = load(file_path)
+def build_model(csv_path: Path, model_path: Path) -> LinearRegression:
+    input = load(csv_path)
     curation(input)
     ohe_data = encoding(input)
     X = input.drop(columns=['price', 'cut','color','clarity']).join(ohe_data)
@@ -51,6 +51,6 @@ def build_model(file_path: Path) -> LinearRegression:
     log_y = input.price.map(np.log).to_numpy() # target
     return LinearRegression().fit(X, log_y)
 
-def predict(model: LinearRegression, y: np.ndarray) -> np.ndarray:
-    return np.exp(model.predict(np.log(y)))
+def predict(model: LinearRegression, samples: np.ndarray) -> np.ndarray:
+    return np.exp(model.predict(samples))
 
