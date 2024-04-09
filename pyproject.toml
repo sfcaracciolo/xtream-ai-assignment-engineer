@@ -1,0 +1,23 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "xtream-ai-assignment-engineer"
+version = "0.0.1"
+authors = [
+  { name="Santiago Federico Caracciolo", email="santiago.caracciolo@gmail.com" },
+]
+description = "Assignments for the interviews of our AI team"
+readme = "README.md"
+requires-python = ">=3.11"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+  "notebook",
+  "pandas",
+  "seaborn",
+]
