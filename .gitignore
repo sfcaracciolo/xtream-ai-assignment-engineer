@@ -133,3 +133,6 @@ share
 include
 etc
 pyvenv.cfg
+*.sqlite
+*.pickle
+tests_temp
