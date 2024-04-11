@@ -82,4 +82,118 @@ So, ready to add some sparkle to this challenge? Let's make these diamonds shine
 ---
 
 ## How to run
-Please fill this section as part of the assignment.
+
+I've developed a package with a folder for each challenge. 
+
+### Installing
+
+First, clone the repo
+```shell
+git clone https://github.com/sfcaracciolo/xtream-ai-assignment-engineer.git
+```
+Then, create a venv in the cloned folder `xtream-ai-assignment-engineer`
+```shell
+python -m venv . 
+```
+activate it, *On windows*
+```shell
+Scripts\activate
+```
+*On linux*
+```shell
+source ./bin/activate
+```
+Finally, install the package and deps,
+```shell
+pip install . 
+```
+### Setting
+
+Please, edit the 4 **absolute** paths defined on the `.env` file. It's important for testing and dev.
+
+### Testing
+Run tests for challenge 3
+```shell
+pytest tests -s -v
+```
+It will create a `tests_temp` folder to build database and models in testing enviroment.
+
+### Challenge 1
+
+Just open the jupyter notebook (default port 8888)
+```shell
+jupyter notebook src\challenge1\main.ipynb
+```
+
+### Challenge 2
+
+I've developed a class called `Model` which enherits `LinearRegression`. I've added some static methods to re use it in the jupyter notebook, such as:
+
+* curation_inplace()
+* featuring_inplace()
+* encoding_inplace()
+* extract_features()
+* extract_target()
+
+I've reimplemented `.fit()` and `.predict()` to encapsulate featuring, encoding and transforms. In this way, data incomes to the model like Francesco handle it. 
+
+In order to build the model, a `.build()` classmethod was developed which curation is performed before training to avoid wrong labels in cut/color/clarity features, duplicated diamonds, missing values and out-of-range values.
+
+To use the automated pipeline a cli was developed. Just run,
+```shell
+python src\challenge2\builder.py -s [SRC_FILE] -d [DST_FILE]
+```
+where the source is a csv file with the diamonds dataset and destination is a pickle file with the trained model instance. Type `-h` for help. Example:
+```shell
+python src\challenge2\builder.py -s "datasets\diamonds\diamonds.csv" -d "datasets\diamonds\model.pickle"
+```
+### Challenge 3
+
+An API was developed with flask and sqlite. All endpoints are `json/application` with raw json data as input/output builded as a combination of 3 dicts:
+```python
+ID = { 'id': int }
+PRICE = { 'price': float }
+FEATURES = {
+    'carat' : float,
+    'cut' : str,
+    'color' : str,
+    'clarity' : str,
+    'depth' : float,
+    'table' : float,
+    'x' : float,
+    'y' : float,
+    'z' : float,
+}
+```
+The endpoints:
+* **POST**: `diamond/create` inserts diamond to database.
+  * Input: PRICE | FEATURES
+  * Output: ID | PRICE | FEATURES
+* **GET**: `diamond/read` read diamond from database.
+  * Input: ID
+  * Output: ID | PRICE | FEATURES
+* **PUT**: `diamond/update`
+  * Input: ID | PRICE | FEATURES
+  * Output: ID | PRICE | FEATURES
+* **DELETE**: `diamond/delete`
+  * Input: ID
+  * Output: ID | PRICE | FEATURES ***
+* **GET**: `diamond/table` returns whole table.
+  * Input: {} (void)
+  * Output: [ID | PRICE | FEATURES] (list of dicts)
+* **GET**: `model/predict` returns price prediction.
+  * Input: FEATURES
+  * Output: PRICE
+* **PUT**: `model/update` backup of current model in BACKUP_MODELS_PATH, then rebuild model with current data and overwrite CURRENT_MODEL_PATH.
+  in database.
+  * Input: {} (void)
+  * Output: {'msg': 'Model updated.'}
+
+The decorator called `@validator` checks Content-Type (error 415), json keys and datatypes required (error 400). If id is not found in diamond read/update/delete a 404 is raised. If a method isn't defined in a endpoint, it'll raise 400.
+
+Just run (default port 5000)
+```shell
+flask --app src\challenge3 run
+```
+In first time execution, a `database.sqlite` and `model.pickle` will be created according to DB_FILE and CURRENT_MODEL_PATH defined in `.env`  file.
+
