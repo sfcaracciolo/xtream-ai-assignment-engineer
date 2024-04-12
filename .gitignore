@@ -136,3 +136,6 @@ pyvenv.cfg
 *.sqlite
 *.pickle
 tests_temp
+src/challenge4/core.py
+src/challenge4/loyal-synthesis-420100-98a333a84b1f.json
+Dockerfile
