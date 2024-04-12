@@ -197,3 +197,20 @@ flask --app src\challenge3 run
 ```
 In first time execution, a `database.sqlite` and `model.pickle` will be created according to DB_FILE and CURRENT_MODEL_PATH defined in `.env`  file.
 
+### Challenge 4
+
+I am going to use GCP with the following architecture:
+
+![Cloud Google Platform](src/challenge4/gcp.png).
+
+On the one hand, we can create a docker image for the endpoints related to the database and expose it in Cloud Run. The database can be a MySQL server created in Cloud SQL. To initialise it we upload `diamonds.csv` to a Cloud Storage bucket and import the csv into a table previously initialised with SQL Studio. So far we have implemented Francesco's business data load.
+
+For the ML model, we can use Vertex AI. We create two scripts: training and prediction. We create the docker images and upload them to Registry Artifacts. On the one hand, through Model Registry we link the image and a bucket where we save the trained model in pickle formatting. The data for training is acquired through a bigquery client linked to Cloud SQL. On the other hand, the training image is associated with the registered model and an endpoint is exposed to compute online predictions.
+
+Some observations: 
+  * All connections are through private IPs, except HTTP endpoints.
+  * The initialisation of the table in Cloud SQL requires creating a user to use SQL Studio.
+  * To perform the csv import to Cloud SQL it is necessary to give permissions to the service account of the SQL instance in the Cloud Storage Bucket.
+  * Several of the above operations can be automated with `gcloud`.
+  * To access Cloud SQL from the Cloud Run service, `mysql+pymysql://<db_user>:<db_pass>@<db_host>:<db_port>/<db_name>` must be used.
+  * The Flask application must have `gunicorn` in production.
