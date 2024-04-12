@@ -177,7 +177,7 @@ The endpoints:
   * Output: ID | PRICE | FEATURES
 * **DELETE**: `diamond/delete`
   * Input: ID
-  * Output: ID | PRICE | FEATURES ***
+  * Output: ID
 * **GET**: `diamond/table` returns whole table.
   * Input: {} (void)
   * Output: [ID | PRICE | FEATURES] (list of dicts)
