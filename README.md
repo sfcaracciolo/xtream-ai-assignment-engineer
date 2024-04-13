@@ -149,7 +149,7 @@ python src\challenge2\builder.py -s "datasets\diamonds\diamonds.csv" -d "dataset
 ```
 ### Challenge 3
 
-An API was developed with flask and sqlite. All endpoints are `json/application` with raw json data as input/output builded as a combination of 3 dicts:
+An API was developed with flask and sqlite in `src\challenge3\__init__.py`. All endpoints are `json/application` with raw json data as input/output builded as a combination of 3 dicts:
 ```python
 ID = { 'id': int }
 PRICE = { 'price': float }
@@ -203,7 +203,7 @@ I am going to use GCP with the following architecture:
 
 ![Cloud Google Platform](src/challenge4/gcp.png).
 
-On the one hand, we can create a docker image for the endpoints related to the database and expose it in Cloud Run. The database can be a MySQL server created in Cloud SQL. To initialise it we upload `diamonds.csv` to a Cloud Storage bucket and import the csv into a table previously initialised with SQL Studio. So far we have implemented Francesco's business data load.
+We can create a docker image for the endpoints related to the database and expose it in Cloud Run. The database can be a MySQL server created in Cloud SQL. To initialise it we upload `diamonds.csv` to a Cloud Storage bucket and import the csv into a table previously initialised with SQL Studio. So far we have implemented Francesco's business data load.
 
 For the ML model, we can use Vertex AI. We create two scripts: training and prediction. We create the docker images and upload them to Registry Artifacts. On the one hand, through Model Registry we link the image and a bucket where we save the trained model in pickle formatting. The data for training is acquired through a bigquery client linked to Cloud SQL. On the other hand, the training image is associated with the registered model and an endpoint is exposed to compute online predictions.
 
