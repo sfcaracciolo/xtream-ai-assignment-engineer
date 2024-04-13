@@ -185,7 +185,6 @@ The endpoints:
   * Input: FEATURES
   * Output: PRICE
 * **PUT**: `model/update` backup of current model in BACKUP_MODELS_PATH, then rebuild model with current data and overwrite CURRENT_MODEL_PATH.
-  in database.
   * Input: {} (void)
   * Output: {'msg': 'Model updated.'}
 
